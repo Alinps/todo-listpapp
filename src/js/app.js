@@ -1,8 +1,16 @@
+// 
+
+
+
+
+
+
 // JavaScript logic for the To-Do List application
 
 document.addEventListener('DOMContentLoaded', loadTasks);
 
 const taskInput = document.getElementById('taskInput');
+const taskDate = document.getElementById('taskDate');
 const addTaskBtn = document.getElementById('addTaskBtn');
 const taskList = document.getElementById('taskList');
 const deleteModal = $('#deleteModal');
@@ -10,7 +18,7 @@ const editModal = $('#editModal');
 const editTaskInput = document.getElementById('editTaskInput');
 let tasks = [];
 let taskToDelete = null;
-let taskToEdit = null; // <-- for modal editing
+let taskToEdit = null;
 
 // Load tasks from localStorage
 function loadTasks() {
@@ -33,7 +41,8 @@ function renderTasks() {
 
         const span = document.createElement('span');
         span.className = 'task-text flex-grow-1';
-        span.textContent = task.text;
+        // Show task name and date
+        span.textContent = `${task.text} (Due: ${task.date})`;
         span.title = "Edit task";
         span.setAttribute('tabindex', 0);
 
@@ -101,12 +110,30 @@ editTaskInput.addEventListener('keydown', function(e) {
 // Add task
 function addTask() {
     const text = taskInput.value.trim();
-    if (!text) return;
-    tasks.push({ text });
+    const date = taskDate.value;
+    if (!text || !date) {
+        if (!date) {
+            taskDate.classList.add('is-invalid');
+            taskDate.focus();
+        } else {
+            taskDate.classList.remove('is-invalid');
+        }
+        if (!text) {
+            taskInput.classList.add('is-invalid');
+            taskInput.focus();
+        } else {
+            taskInput.classList.remove('is-invalid');
+        }
+        return;
+    }
+    taskInput.classList.remove('is-invalid');
+    taskDate.classList.remove('is-invalid');
+    tasks.push({ text, date });
     saveTasks();
     renderTasks();
     animateLastAdded();
     taskInput.value = '';
+    taskDate.value = '';
     taskInput.focus();
 }
 
@@ -140,6 +167,9 @@ document.getElementById('confirmDeleteBtn').onclick = function() {
 // Add task events
 addTaskBtn.onclick = addTask;
 taskInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addTask();
+});
+taskDate.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') addTask();
 });
 

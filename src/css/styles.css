@@ -1,5 +1,5 @@
 body {
-    background: #f8fafc;
+    background: #e7eff0;
 }
 
 h1 {
@@ -120,4 +120,12 @@ h1 {
     .btncustom {
         color:lightskyblue;
     }
+
+
+    /* ...existing code... */
+input.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220,53,69,.25);
+}
+/* ...existing code... */
 }
