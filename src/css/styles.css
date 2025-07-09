@@ -1,10 +1,14 @@
 body {
-    background: #e4e7ef;
+    background:linear-gradient(45deg, #ebe9ec, #9c5cca);
+    display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 h1 {
     text-align: center;
     color: #343a40;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
 }
 
 .container {
@@ -166,6 +170,7 @@ input.is-invalid {
     box-shadow: 0 4px 14px rgba(33,147,176,0.15);
     transition: background 0.4s, transform 0.2s, box-shadow 0.2s;
     outline: none;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
 }
 
 .btn-aesthetic:hover, .btn-aesthetic:focus {
@@ -198,12 +203,13 @@ input.is-invalid {
     border: none;
     border-radius: 25px;
     padding: 0.6em 1.5em;
-    font-weight: 600;
+    font-weight: 400;
     font-size: 1rem;
     cursor: pointer;
     box-shadow: 0 4px 14px rgba(33,147,176,0.15);
     transition: background 0.4s, transform 0.2s, box-shadow 0.2s;
     outline: none;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
 }
 
 .btn-aesthetic3 {
@@ -212,12 +218,13 @@ input.is-invalid {
     border: none;
     border-radius: 25px;
     padding: 0.6em 1.5em;
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: 400;
+    font-size: 1.5rem;
     cursor: pointer;
     box-shadow: 0 4px 14px rgba(33,147,176,0.15);
     transition: background 0.4s, transform 0.2s, box-shadow 0.2s;
     outline: none;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
 }
 
 .btn-aesthetic3:hover, .btn-aesthetic3:focus {
@@ -280,14 +287,15 @@ input.is-invalid {
 
 
 .custom-outline-btn {
-  color: #000000;         /* Text color */
+  color: #764ba2;         /* Text color */
   border-color: #764ba2;  /* Border color */
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
 }
 
 .custom-outline-btn:hover,
 .custom-outline-btn:focus {
   background: linear-gradient(90deg, #764ba2, #764ba2);
-  color: white;
+  color:#764ba2;
   border-color: #764ba2;
 }
 
@@ -296,8 +304,44 @@ input.is-invalid {
 .custom-outline-btn.active,
 .show > .custom-outline-btn.dropdown-toggle {
   background: linear-gradient(90deg, #667eea, #764ba2); /* Darker shade */
-  color: white;
+  color: #764ba2;
   border-color: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+
+
+.pagination .page-link {
+  color: #dfdee6;
+  border: 1px solid #7217d2;
+  background-color: #6f11da;
+  margin: 0 3px;
+  transition: all 0.3s ease;
+  font-family: Comic Sans MS, Comic Sans, cursive;
+}
+
+.pagination .page-link:hover {
+  background-color: #431aa1;
+  border-color: #b28dff;
+  color: #eae6ec;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #4e2473;
+  border-color: #4e2473;
+  color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+  background-color: #9782e8;
+  color: #efedf5;
+  border-color: #9782e8;
+  pointer-events: none;
+}
+
+
+.custom-input::placeholder {
+  color: #764ba2; /* light lavender color */
+
 }
 
 

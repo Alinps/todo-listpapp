@@ -96,7 +96,7 @@ function createSearchBox() {
         taskList.parentNode.insertBefore(searchContainer, taskList);
     }
     searchContainer.innerHTML = `
-        <input type="text" id="searchInput" class="form-control" placeholder="Search tasks by name...">
+        <input type="text" id="searchInput" class="form-control custom-input" placeholder="Search tasks by name..." style="font-family: Comic Sans MS, Comic Sans, cursive; color:#764ba2;">
     `;
     document.getElementById('searchInput').addEventListener('input', function () {
         currentPage = 1;
@@ -410,11 +410,11 @@ function createExportDropdown() {
                 Export
             </button>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="#" data-export="csv">CSV</a>
-                <a class="dropdown-item" href="#" data-export="json">JSON</a>
-                <a class="dropdown-item" href="#" data-export="txt">Plain Text</a>
-                <a class="dropdown-item" href="#" data-export="xml">XML</a>
-                <a class="dropdown-item" href="#" data-export="pdf">PDF</a>
+                <a class="dropdown-item" href="#" data-export="csv" Style="font-family:Comic Sans MS, Comic Sans, cursive;color:#764ba2">CSV</a>
+                <a class="dropdown-item" href="#" data-export="json" Style="font-family:Comic Sans MS, Comic Sans, cursive;color:#764ba2">JSON</a>
+                <a class="dropdown-item" href="#" data-export="txt" Style="font-family:Comic Sans MS, Comic Sans, cursive;color:#764ba2">Plain Text</a>
+                <a class="dropdown-item" href="#" data-export="xml" Style="font-family:Comic Sans MS, Comic Sans, cursive;color:#764ba2">XML</a>
+                <a class="dropdown-item" href="#" data-export="pdf" Style="font-family:Comic Sans MS, Comic Sans, cursive;color:#764ba2">PDF</a>
             </div>
             <label type = "button" class="btn  mb-0  btn-aesthetic2">
                 Import
@@ -687,16 +687,16 @@ style.textContent = `
     position: absolute;
     top: 0; left: 0;
     height: 22px; width: 22px;
-    background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
-    border-radius: 7px;
-    border: 2px solid #bdbdbd;
+    background: linear-gradient(135deg,rgb(192, 176, 204) 0%,rgb(172, 131, 219) 100%);
+    border-radius:8px;
+    border: 2px solidrgb(184, 37, 214);
     transition: border-color 0.2s, box-shadow 0.2s;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 .custom-checkbox input:checked ~ .checkmark {
-    border-color: #4f8cff;
-    background: linear-gradient(135deg, #4f8cff 0%, #6fc3ff 100%);
-    box-shadow: 0 2px 8px rgba(79,140,255,0.15);
+    border-color:rgb(162, 54, 230);
+    background: linear-gradient(135deg,rgb(128, 86, 154) 0%,rgb(137, 78, 179) 100%);
+    box-shadow: 0 2px 8px rgba(146, 0, 244, 0.15);
 }
 .check-pop-animation {
     animation: check-pop 0.25s cubic-bezier(.4,2,.6,1);
