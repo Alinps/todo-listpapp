@@ -96,7 +96,7 @@ function createSearchBox() {
         taskList.parentNode.insertBefore(searchContainer, taskList);
     }
     searchContainer.innerHTML = `
-        <input type="text" id="searchInput" class="form-control custom-input" placeholder="Search tasks by name..." style="font-family: Comic Sans MS, Comic Sans, cursive; color:#764ba2;">
+        <input type="text" id="searchInput" class="form-control custom-input" placeholder="Search tasks by name..." style="font-family: Comic Sans MS, Comic Sans, cursive; color:#5b0a96;">
     `;
     document.getElementById('searchInput').addEventListener('input', function () {
         currentPage = 1;

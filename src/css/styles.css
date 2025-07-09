@@ -287,7 +287,7 @@ input.is-invalid {
 
 
 .custom-outline-btn {
-  color: #764ba2;         /* Text color */
+  color: #5b0a96;         /* Text color */
   border-color: #764ba2;  /* Border color */
   font-family: "Comic Sans MS", "Comic Sans", cursive;
 }
@@ -295,7 +295,7 @@ input.is-invalid {
 .custom-outline-btn:hover,
 .custom-outline-btn:focus {
   background: linear-gradient(90deg, #764ba2, #764ba2);
-  color:#764ba2;
+  color:#5b0a96;
   border-color: #764ba2;
 }
 
@@ -304,7 +304,7 @@ input.is-invalid {
 .custom-outline-btn.active,
 .show > .custom-outline-btn.dropdown-toggle {
   background: linear-gradient(90deg, #667eea, #764ba2); /* Darker shade */
-  color: #764ba2;
+  color: #5b0a96;
   border-color: linear-gradient(90deg, #667eea, #764ba2);
 }
 
