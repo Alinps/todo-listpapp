@@ -74,6 +74,27 @@ function renderPagination() {
     });
 }
 
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    if (isNaN(date)) return dateStr;
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'long' });
+    const year = date.getFullYear();
+
+    // Get ordinal suffix
+    function ordinal(n) {
+        if (n > 3 && n < 21) return 'th';
+        switch (n % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    }
+
+    return `${day}${ordinal(day)} ${month} ${year}`;
+}
+
 function renderTasks() {
     taskList.innerHTML = '';
     const paginatedTasks = getPaginatedTasks();
@@ -108,7 +129,7 @@ function renderTasks() {
 
         const span = document.createElement('span');
         span.className = 'task-text flex-grow-1';
-        span.textContent = `${task.text} (Due: ${task.date})`;
+        span.textContent = `${task.text} (Due: ${formatDate(task.date)})`;
         span.title = "Edit task";
         span.setAttribute('tabindex', 0);
         if (task.completed) {
@@ -231,6 +252,80 @@ document.getElementById('confirmDeleteBtn').onclick = function () {
         });
     }
 };
+
+
+
+
+const searchInput = document.createElement('input');
+searchInput.type = 'text';
+searchInput.className = 'form-control mb-3';
+searchInput.placeholder = 'Search tasks...';
+searchInput.id = 'searchInput';
+taskList.parentNode.insertBefore(searchInput, taskList);
+
+let searchQuery = '';
+
+searchInput.addEventListener('input', function () {
+    searchQuery = this.value.trim().toLowerCase();
+    currentPage = 1;
+    renderTasks();
+});
+
+function getPaginatedTasks() {
+    let filtered = tasks;
+    if (searchQuery) {
+        filtered = tasks.filter(task => task.text.toLowerCase().includes(searchQuery));
+    }
+    const start = (currentPage - 1) * TASKS_PER_PAGE;
+    return filtered.slice(start, start + TASKS_PER_PAGE);
+}
+
+function renderPagination() {
+    let pagination = document.getElementById('pagination');
+    if (!pagination) {
+        pagination = document.createElement('nav');
+        pagination.id = 'pagination';
+        pagination.className = 'mt-3';
+        taskList.parentNode.appendChild(pagination);
+    }
+
+    let filtered = tasks;
+    if (searchQuery) {
+        filtered = tasks.filter(task => task.text.toLowerCase().includes(searchQuery));
+    }
+    const totalPages = Math.ceil(filtered.length / TASKS_PER_PAGE);
+    if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
+
+    let html = `<ul class="pagination justify-content-center mb-0">`;
+    html += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage - 1}">&laquo;</a>
+            </li>`;
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<li class="page-item${i === currentPage ? ' active' : ''}">
+                    <a class="page-link" href="#" data-page="${i}">${i}</a>
+                </li>`;
+    }
+    html += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage + 1}">&raquo;</a>
+            </li>`;
+    html += `</ul>`;
+
+    pagination.innerHTML = html;
+
+    pagination.querySelectorAll('a.page-link').forEach(link => {
+        link.onclick = function (e) {
+            e.preventDefault();
+            const page = parseInt(this.getAttribute('data-page'));
+            if (page >= 1 && page <= totalPages && page !== currentPage) {
+                currentPage = page;
+                renderTasks();
+            }
+        };
+    });
+}
 
 
 
