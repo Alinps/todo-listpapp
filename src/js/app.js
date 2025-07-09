@@ -1,517 +1,3 @@
-// // 
-
-
-
-
-
-
-// // JavaScript logic for the To-Do List application
-
-// document.addEventListener('DOMContentLoaded', loadTasks);
-
-// const taskInput = document.getElementById('taskInput');
-// const taskDate = document.getElementById('taskDate');
-// const addTaskBtn = document.getElementById('addTaskBtn');
-// const taskList = document.getElementById('taskList');
-// const deleteModal = $('#deleteModal');
-// const editModal = $('#editModal');
-// const editTaskInput = document.getElementById('editTaskInput');
-// let tasks = [];
-// let taskToDelete = null;
-// let taskToEdit = null;
-
-// // Load tasks from localStorage
-// function loadTasks() {
-//     const stored = localStorage.getItem('tasks');
-//     tasks = stored ? JSON.parse(stored) : [];
-// }
-
-// // Save tasks to localStorage
-// function saveTasks() {
-//     localStorage.setItem('tasks', JSON.stringify(tasks));
-// }
-
-// // Render tasks
-// function renderTasks() {
-//     taskList.innerHTML = '';
-//     tasks.forEach((task, idx) => {
-//         const li = document.createElement('li');
-//         li.className = 'list-group-item d-flex align-items-center';
-//         li.setAttribute('data-index', idx);
-
-//         const span = document.createElement('span');
-//         span.className = 'task-text flex-grow-1';
-//         // Show task name and date
-//         span.textContent = `${task.text} (Due: ${task.date})`;
-//         span.title = "Edit task";
-//         span.setAttribute('tabindex', 0);
-
-//         // Double-click to edit via modal
-//         span.ondblclick = () => openEditModal(idx);
-
-//         // Action buttons
-//         const actions = document.createElement('div');
-//         actions.className = 'action-btns';
-
-//         // Edit button
-//         const editBtn = document.createElement('button');
-//         editBtn.className = 'btn btn-sm btn-outline-secondary mr-1';
-//         editBtn.innerHTML = '<i class="bi bi-pencil"></i>';
-//         editBtn.title = "Edit";
-//         editBtn.onclick = () => openEditModal(idx);
-
-//         // Delete button
-//         const delBtn = document.createElement('button');
-//         delBtn.className = 'btn btn-sm btn-outline-danger';
-//         delBtn.innerHTML = '<i class="bi bi-trash"></i>';
-//         delBtn.title = "Delete";
-//         delBtn.onclick = () => {
-//             taskToDelete = idx;
-//             deleteModal.modal('show');
-//         };
-
-//         actions.appendChild(editBtn);
-//         actions.appendChild(delBtn);
-
-//         li.appendChild(span);
-//         li.appendChild(actions);
-
-//         taskList.appendChild(li);
-//     });
-// }
-
-// function toggleTaskCompleted(idx) {
-//     tasks[idx].completed = !tasks[idx].completed;
-//     saveTasks();
-//     renderTasks();
-// }
-// /**
-//  * Modernize the checkbox with custom styling and add animations.
-//  * Uses a wrapper span for the custom checkbox and CSS classes for animation.
-//  */
-
-// // Add custom CSS for modern checkbox and animation
-// const style = document.createElement('style');
-// style.textContent = `
-// .custom-checkbox {
-//     position: relative;
-//     display: inline-block;
-//     width: 22px;
-//     height: 22px;
-//     margin-right: 12px;
-//     vertical-align: middle;
-// }
-// .custom-checkbox input[type="checkbox"] {
-//     opacity: 0;
-//     width: 22px;
-//     height: 22px;
-//     margin: 0;
-//     position: absolute;
-//     left: 0;
-//     top: 0;
-//     cursor: pointer;
-//     z-index: 2;
-// }
-// .custom-checkbox .checkmark {
-//     position: absolute;
-//     top: 0; left: 0;
-//     height: 22px; width: 22px;
-//     background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
-//     border-radius: 7px;
-//     border: 2px solid #bdbdbd;
-//     transition: border-color 0.2s, box-shadow 0.2s;
-//     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-// }
-// .custom-checkbox input:checked ~ .checkmark {
-//     border-color: #4f8cff;
-//     background: linear-gradient(135deg, #4f8cff 0%, #6fc3ff 100%);
-//     box-shadow: 0 2px 8px rgba(79,140,255,0.15);
-//     animation: check-pop 0.25s cubic-bezier(.4,2,.6,1) 1;
-// }
-// @keyframes check-pop {
-//     0% { transform: scale(0.7); }
-//     60% { transform: scale(1.15); }
-//     100% { transform: scale(1); }
-// }
-// .custom-checkbox .checkmark:after {
-//     content: "";
-//     position: absolute;
-//     display: none;
-// }
-// .custom-checkbox input:checked ~ .checkmark:after {
-//     display: block;
-// }
-// .custom-checkbox .checkmark:after {
-//     left: 6px;
-//     top: 2px;
-//     width: 7px;
-//     height: 13px;
-//     border: solid #fff;
-//     border-width: 0 3px 3px 0;
-//     border-radius: 1px;
-//     transform: rotate(45deg);
-//     animation: checkmark-draw 0.18s cubic-bezier(.4,2,.6,1) 1;
-// }
-// @keyframes checkmark-draw {
-//     0% { height: 0; width: 0; opacity: 0; }
-//     60% { height: 13px; width: 0; opacity: 1; }
-//     100% { height: 13px; width: 7px; opacity: 1; }
-// }
-// `;
-// document.head.appendChild(style);
-
-// // Override renderTasks to use the modern animated checkbox
-// const originalRenderTasksModern = renderTasks;
-// renderTasks = function() {
-//     taskList.innerHTML = '';
-//     tasks.forEach((task, idx) => {
-//         const li = document.createElement('li');
-//         li.className = 'list-group-item d-flex align-items-center';
-//         li.setAttribute('data-index', idx);
-
-//         // Modern animated checkbox
-//         const checkboxWrapper = document.createElement('span');
-//         checkboxWrapper.className = 'custom-checkbox';
-
-//         const checkbox = document.createElement('input');
-//         checkbox.type = 'checkbox';
-//         checkbox.checked = !!task.completed;
-//         checkbox.title = "Mark as completed";
-//         checkbox.onclick = () => toggleTaskCompleted(idx);
-
-//         const checkmark = document.createElement('span');
-//         checkmark.className = 'checkmark';
-
-//         checkboxWrapper.appendChild(checkbox);
-//         checkboxWrapper.appendChild(checkmark);
-
-
-
-
-
-
-//     const TASKS_PER_PAGE = 5;
-//     let currentPage = 1;
-
-//     // Helper to get paginated tasks
-//     function getPaginatedTasks() {
-//         const start = (currentPage - 1) * TASKS_PER_PAGE;
-//         return tasks.slice(start, start + TASKS_PER_PAGE);
-//     }
-
-//     // Render pagination controls
-//     function renderPagination() {
-//         let pagination = document.getElementById('pagination');
-//         if (!pagination) {
-//             pagination = document.createElement('nav');
-//             pagination.id = 'pagination';
-//             pagination.className = 'mt-3';
-//             taskList.parentNode.appendChild(pagination);
-//         }
-//         const totalPages = Math.ceil(tasks.length / TASKS_PER_PAGE);
-//         if (totalPages <= 1) {
-//             pagination.innerHTML = '';
-//             return;
-//         }
-//         let html = `<ul class="pagination justify-content-center mb-0">`;
-//         html += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}">
-//             <a class="page-link" href="#" data-page="${currentPage - 1}">&laquo;</a>
-//         </li>`;
-//         for (let i = 1; i <= totalPages; i++) {
-//             html += `<li class="page-item${i === currentPage ? ' active' : ''}">
-//                 <a class="page-link" href="#" data-page="${i}">${i}</a>
-//             </li>`;
-//         }
-//         html += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}">
-//             <a class="page-link" href="#" data-page="${currentPage + 1}">&raquo;</a>
-//         </li>`;
-//         html += `</ul>`;
-//         pagination.innerHTML = html;
-//         pagination.querySelectorAll('a.page-link').forEach(link => {
-//             link.onclick = function(e) {
-//                 e.preventDefault();
-//                 const page = parseInt(this.getAttribute('data-page'));
-//                 if (page >= 1 && page <= totalPages && page !== currentPage) {
-//                     currentPage = page;
-//                     renderTasks();
-//                 }
-//             };
-//         });
-//     }
-
-//     // Use paginated tasks for rendering
-//     const paginatedTasks = getPaginatedTasks();
-//     paginatedTasks.forEach((task, idx) => {
-//         const realIdx = (currentPage - 1) * TASKS_PER_PAGE + idx;
-//         // ... use realIdx instead of idx for all handlers below ...
-//         const li = document.createElement('li');
-//         li.className = 'list-group-item d-flex align-items-center';
-//         li.setAttribute('data-index', realIdx);
-
-//         // Modern animated checkbox
-//         const checkboxWrapper = document.createElement('span');
-//         checkboxWrapper.className = 'custom-checkbox';
-
-//         const checkbox = document.createElement('input');
-//         checkbox.type = 'checkbox';
-//         checkbox.checked = !!task.completed;
-//         checkbox.title = "Mark as completed";
-//         checkbox.onclick = () => toggleTaskCompleted(realIdx);
-
-//         const checkmark = document.createElement('span');
-//         checkmark.className = 'checkmark';
-
-//         checkboxWrapper.appendChild(checkbox);
-//         checkboxWrapper.appendChild(checkmark);
-
-//         // Task text
-//         const span = document.createElement('span');
-//         span.className = 'task-text flex-grow-1';
-//         span.textContent = `${task.text} (Due: ${task.date})`;
-//         span.title = "Edit task";
-//         span.setAttribute('tabindex', 0);
-//         if (task.completed) {
-//             span.style.textDecoration = 'line-through';
-//             span.style.opacity = '0.6';
-//         }
-
-//         span.ondblclick = () => openEditModal(realIdx);
-
-//         // Action buttons
-//         const actions = document.createElement('div');
-//         actions.className = 'action-btns';
-
-//         const editBtn = document.createElement('button');
-//         editBtn.className = 'btn btn-sm btn-outline-secondary mr-1';
-//         editBtn.innerHTML = '<i class="bi bi-pencil"></i>';
-//         editBtn.title = "Edit";
-//         editBtn.onclick = () => openEditModal(realIdx);
-
-//         const delBtn = document.createElement('button');
-//         delBtn.className = 'btn btn-sm btn-outline-danger';
-//         delBtn.innerHTML = '<i class="bi bi-trash"></i>';
-//         delBtn.title = "Delete";
-//         delBtn.onclick = () => {
-//             taskToDelete = realIdx;
-//             deleteModal.modal('show');
-//         };
-
-//         actions.appendChild(editBtn);
-//         actions.appendChild(delBtn);
-
-//         li.appendChild(checkboxWrapper);
-//         li.appendChild(span);
-//         li.appendChild(actions);
-
-//         taskList.appendChild(li);
-//     });
-//     renderPagination();
-
-
-
-
-
-
-
-
-
-//         // Task text
-//         const span = document.createElement('span');
-//         span.className = 'task-text flex-grow-1';
-//         span.textContent = `${task.text} (Due: ${task.date})`;
-//         span.title = "Edit task";
-//         span.setAttribute('tabindex', 0);
-//         if (task.completed) {
-//             span.style.textDecoration = 'line-through';
-//             span.style.opacity = '0.6';
-//         }
-
-//         span.ondblclick = () => openEditModal(idx);
-
-//         // Action buttons
-//         const actions = document.createElement('div');
-//         actions.className = 'action-btns';
-
-//         const editBtn = document.createElement('button');
-//         editBtn.className = 'btn btn-sm btn-outline-secondary mr-1';
-//         editBtn.innerHTML = '<i class="bi bi-pencil"></i>';
-//         editBtn.title = "Edit";
-//         editBtn.onclick = () => openEditModal(idx);
-
-//         const delBtn = document.createElement('button');
-//         delBtn.className = 'btn btn-sm btn-outline-danger';
-//         delBtn.innerHTML = '<i class="bi bi-trash"></i>';
-//         delBtn.title = "Delete";
-//         delBtn.onclick = () => {
-//             taskToDelete = idx;
-//             deleteModal.modal('show');
-//         };
-
-//         actions.appendChild(editBtn);
-//         actions.appendChild(delBtn);
-
-//         li.appendChild(checkboxWrapper);
-//         li.appendChild(span);
-//         li.appendChild(actions);
-
-//         taskList.appendChild(li);
-//     });
-// };
-// // // Update renderTasks to include checkbox
-// // const originalRenderTasks = renderTasks;
-// // renderTasks = function() {
-// //     taskList.innerHTML = '';
-// //     tasks.forEach((task, idx) => {
-// //         const li = document.createElement('li');
-// //         li.className = 'list-group-item d-flex align-items-center';
-// //         li.setAttribute('data-index', idx);
-
-// //         // Stylish checkbox
-// //         const checkbox = document.createElement('input');
-// //         checkbox.type = 'checkbox';
-// //         checkbox.className = 'form-check-input mr-2';
-// //         checkbox.checked = !!task.completed;
-// //         checkbox.title = "Mark as completed";
-// //         checkbox.onclick = () => toggleTaskCompleted(idx);
-
-// //         // Task text
-// //         const span = document.createElement('span');
-// //         span.className = 'task-text flex-grow-1';
-// //         span.textContent = `${task.text} (Due: ${task.date})`;
-// //         span.title = "Edit task";
-// //         span.setAttribute('tabindex', 0);
-// //         if (task.completed) {
-// //             span.style.textDecoration = 'line-through';
-// //             span.style.opacity = '0.6';
-// //         }
-
-// //         span.ondblclick = () => openEditModal(idx);
-
-// //         // Action buttons
-// //         const actions = document.createElement('div');
-// //         actions.className = 'action-btns';
-
-// //         const editBtn = document.createElement('button');
-// //         editBtn.className = 'btn btn-sm btn-outline-secondary mr-1';
-// //         editBtn.innerHTML = '<i class="bi bi-pencil"></i>';
-// //         editBtn.title = "Edit";
-// //         editBtn.onclick = () => openEditModal(idx);
-
-// //         const delBtn = document.createElement('button');
-// //         delBtn.className = 'btn btn-sm btn-outline-danger';
-// //         delBtn.innerHTML = '<i class="bi bi-trash"></i>';
-// //         delBtn.title = "Delete";
-// //         delBtn.onclick = () => {
-// //             taskToDelete = idx;
-// //             deleteModal.modal('show');
-// //         };
-
-// //         actions.appendChild(editBtn);
-// //         actions.appendChild(delBtn);
-
-// //         li.appendChild(checkbox);
-// //         li.appendChild(span);
-// //         li.appendChild(actions);
-
-// //         taskList.appendChild(li);
-// //     });
-// // };
-
-// // Open edit modal and set current task index
-// function openEditModal(idx) {
-//     taskToEdit = idx;
-//     editTaskInput.value = tasks[idx].text;
-//     editModal.modal('show');
-//     setTimeout(() => editTaskInput.focus(), 300);
-// }
-
-// // Save edit from modal
-// document.getElementById('saveEditBtn').onclick = function() {
-//     const newText = editTaskInput.value.trim();
-//     if (taskToEdit !== null && newText) {
-//         tasks[taskToEdit].text = newText;
-//         saveTasks();
-//         renderTasks();
-//         taskToEdit = null;
-//         editModal.modal('hide');
-//     }
-// };
-
-// // Allow Enter key to save in modal
-// editTaskInput.addEventListener('keydown', function(e) {
-//     if (e.key === 'Enter') {
-//         document.getElementById('saveEditBtn').click();
-//     }
-// });
-
-// // Add task
-// function addTask() {
-//     const text = taskInput.value.trim();
-//     const date = taskDate.value;
-//     if (!text || !date) {
-//         if (!date) {
-//             taskDate.classList.add('is-invalid');
-//             taskDate.focus();
-//         } else {
-//             taskDate.classList.remove('is-invalid');
-//         }
-//         if (!text) {
-//             taskInput.classList.add('is-invalid');
-//             taskInput.focus();
-//         } else {
-//             taskInput.classList.remove('is-invalid');
-//         }
-//         return;
-//     }
-//     taskInput.classList.remove('is-invalid');
-//     taskDate.classList.remove('is-invalid');
-//     tasks.push({ text, date });
-//     saveTasks();
-//     renderTasks();
-//     animateLastAdded();
-//     taskInput.value = '';
-//     taskDate.value = '';
-//     taskInput.focus();
-// }
-
-// Animate last added task
-function animateLastAdded() {
-    const items = taskList.querySelectorAll('.list-group-item');
-    if (items.length) {
-        const last = items[items.length - 1];
-        last.classList.add('added');
-        setTimeout(() => last.classList.remove('added'), 500);
-    }
-}
-
-// // Delete task
-// document.getElementById('confirmDeleteBtn').onclick = function() {
-//     if (taskToDelete !== null) {
-//         const li = taskList.querySelector(`[data-index="${taskToDelete}"]`);
-//         if (li) {
-//             li.classList.add('removed');
-//             setTimeout(() => {
-//                 tasks.splice(taskToDelete, 1);
-//                 saveTasks();
-//                 renderTasks();
-//                 taskToDelete = null;
-//                 deleteModal.modal('hide');
-//             }, 400);
-//         }
-//     }
-// };
-
-// // Add task events
-// addTaskBtn.onclick = addTask;
-// taskInput.addEventListener('keydown', function(e) {
-//     if (e.key === 'Enter') addTask();
-// });
-// taskDate.addEventListener('keydown', function(e) {
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
     loadTasks();
     renderTasks();
@@ -531,24 +17,20 @@ let taskToEdit = null;
 let currentPage = 1;
 const TASKS_PER_PAGE = 5;
 
-// Load tasks from localStorage
 function loadTasks() {
     const stored = localStorage.getItem('tasks');
     tasks = stored ? JSON.parse(stored) : [];
 }
 
-// Save tasks to localStorage
 function saveTasks() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// Get paginated tasks
 function getPaginatedTasks() {
     const start = (currentPage - 1) * TASKS_PER_PAGE;
     return tasks.slice(start, start + TASKS_PER_PAGE);
 }
 
-// Render pagination controls
 function renderPagination() {
     let pagination = document.getElementById('pagination');
     if (!pagination) {
@@ -592,7 +74,6 @@ function renderPagination() {
     });
 }
 
-// Render tasks
 function renderTasks() {
     taskList.innerHTML = '';
     const paginatedTasks = getPaginatedTasks();
@@ -604,7 +85,12 @@ function renderTasks() {
         li.className = 'list-group-item d-flex align-items-center';
         li.setAttribute('data-index', realIdx);
 
-        // Custom animated checkbox
+        if (task.completed) {
+            li.classList.add('completed-task');
+        } else {
+            li.classList.remove('completed-task');
+        }
+
         const checkboxWrapper = document.createElement('span');
         checkboxWrapper.className = 'custom-checkbox';
 
@@ -620,7 +106,6 @@ function renderTasks() {
         checkboxWrapper.appendChild(checkbox);
         checkboxWrapper.appendChild(checkmark);
 
-        // Task text
         const span = document.createElement('span');
         span.className = 'task-text flex-grow-1';
         span.textContent = `${task.text} (Due: ${task.date})`;
@@ -630,10 +115,8 @@ function renderTasks() {
             span.style.textDecoration = 'line-through';
             span.style.opacity = '0.6';
         }
-
         span.ondblclick = () => openEditModal(realIdx);
 
-        // Action buttons
         const actions = document.createElement('div');
         actions.className = 'action-btns';
 
@@ -665,14 +148,45 @@ function renderTasks() {
     renderPagination();
 }
 
-// Toggle task completion
+//✅ FIXED toggle with animation applied to correct checkbox
+// function toggleTaskCompleted(idx) {
+//     const checkbox = taskList.querySelector(`li[data-index="${idx}"] .checkmark`);
+//     if (checkbox) {
+//         checkbox.classList.add('check-pop-animation');
+//         setTimeout(() => {
+//             checkbox.classList.remove('check-pop-animation');
+//         }, 250);
+//     }
+
+//     tasks[idx].completed = !tasks[idx].completed;
+//     saveTasks();
+//     renderTasks();
+// }
+
+
 function toggleTaskCompleted(idx) {
     tasks[idx].completed = !tasks[idx].completed;
     saveTasks();
     renderTasks();
+
+    // Wait until DOM updates, then animate specific task
+    requestAnimationFrame(() => {
+        const li = taskList.querySelector(`li[data-index="${idx}"]`);
+        if (li) {
+            const checkmark = li.querySelector('.checkmark');
+            if (checkmark) {
+                checkmark.classList.add('animated');
+                setTimeout(() => checkmark.classList.remove('animated'), 300);
+            }
+        }
+    });
 }
 
-// Open edit modal
+
+
+
+
+
 function openEditModal(idx) {
     taskToEdit = idx;
     editTaskInput.value = tasks[idx].text;
@@ -680,7 +194,6 @@ function openEditModal(idx) {
     setTimeout(() => editTaskInput.focus(), 300);
 }
 
-// Save edited task
 document.getElementById('saveEditBtn').onclick = function () {
     const newText = editTaskInput.value.trim();
     if (taskToEdit !== null && newText) {
@@ -691,53 +204,6 @@ document.getElementById('saveEditBtn').onclick = function () {
         editModal.modal('hide');
     }
 };
-
-// Delete task
-document.getElementById('confirmDeleteBtn').onclick = function () {
-    if (taskToDelete !== null) {
-        tasks.splice(taskToDelete, 1);
-        saveTasks();
-        if ((currentPage - 1) * TASKS_PER_PAGE >= tasks.length) {
-            currentPage = Math.max(1, currentPage - 1);
-        }
-        renderTasks();
-        taskToDelete = null;
-        deleteModal.modal('hide');
-    }
-};
-
-// Add task
-function addTask() {
-    const text = taskInput.value.trim();
-    const date = taskDate.value;
-    if (!text || !date) {
-        if (!text) {
-            taskInput.classList.add('is-invalid');
-        } else {
-            taskInput.classList.remove('is-invalid');
-        }
-        if (!date) {
-            taskDate.classList.add('is-invalid');
-        } else {
-            taskDate.classList.remove('is-invalid');
-        }
-        return;
-    }
-
-    taskInput.classList.remove('is-invalid');
-    taskDate.classList.remove('is-invalid');
-
-    tasks.push({ text, date, completed: false });
-    saveTasks();
-    currentPage = Math.ceil(tasks.length / TASKS_PER_PAGE); // Go to last page
-    renderTasks();
-    animateLastAdded();
-
-    taskInput.value = '';
-    taskDate.value = '';
-    taskInput.focus();
-}
-
 
 function animateDelete(idx, callback) {
     const li = taskList.querySelector(`[data-index="${idx}"]`);
@@ -751,7 +217,6 @@ function animateDelete(idx, callback) {
     }
 }
 
-// Update delete handler to use animation
 document.getElementById('confirmDeleteBtn').onclick = function () {
     if (taskToDelete !== null) {
         animateDelete(taskToDelete, () => {
@@ -767,23 +232,50 @@ document.getElementById('confirmDeleteBtn').onclick = function () {
     }
 };
 
-// Add CSS for delete animation
-const deleteAnimStyle = document.createElement('style');
-deleteAnimStyle.textContent = `
-.removed {
-    animation: fadeOut 0.4s forwards cubic-bezier(.4,2,.6,1);
+
+
+
+function addTask() {
+    const text = taskInput.value.trim();
+    const date = taskDate.value;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
+
+    if (!text || !date) {
+        if (!text) taskInput.classList.add('is-invalid');
+        else taskInput.classList.remove('is-invalid');
+        if (!date) taskDate.classList.add('is-invalid');
+        else taskDate.classList.remove('is-invalid');
+        return;
+    }
+
+    // Date validation: only allow today or future dates
+    const dueDate = new Date(date);
+    dueDate.setHours(0, 0, 0, 0);
+    if (dueDate < today) {
+        taskDate.classList.add('is-invalid');
+        taskDate.setCustomValidity('Due date cannot be in the past.');
+        taskDate.reportValidity();
+        return;
+    } else {
+        taskDate.classList.remove('is-invalid');
+        taskDate.setCustomValidity('');
+    }
+
+    taskInput.classList.remove('is-invalid');
+    taskDate.classList.remove('is-invalid');
+
+    tasks.push({ text, date, completed: false });
+    saveTasks();
+    currentPage = Math.ceil(tasks.length / TASKS_PER_PAGE);
+    renderTasks();
+    animateLastAdded();
+
+    taskInput.value = '';
+    taskDate.value = '';
+    taskInput.focus();
 }
-@keyframes fadeOut {
-    from { opacity: 1; transform: scale(1); background: #ffeaea; }
-    to { opacity: 0; transform: scale(0.95); height: 0; margin: 0; padding: 0; }
-}
-`;
-document.head.appendChild(deleteAnimStyle);
 
-
-
-
-// Animate last task
 function animateLastAdded() {
     const items = taskList.querySelectorAll('.list-group-item');
     if (items.length) {
@@ -793,7 +285,6 @@ function animateLastAdded() {
     }
 }
 
-// Input events
 addTaskBtn.onclick = addTask;
 taskInput.addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
 taskDate.addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
@@ -801,7 +292,7 @@ editTaskInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('saveEditBtn').click();
 });
 
-// Modern checkbox styling
+// CSS for animations
 const style = document.createElement('style');
 style.textContent = `
 .custom-checkbox {
@@ -816,7 +307,6 @@ style.textContent = `
     opacity: 0;
     width: 22px;
     height: 22px;
-    margin: 0;
     position: absolute;
     left: 0;
     top: 0;
@@ -837,7 +327,9 @@ style.textContent = `
     border-color: #4f8cff;
     background: linear-gradient(135deg, #4f8cff 0%, #6fc3ff 100%);
     box-shadow: 0 2px 8px rgba(79,140,255,0.15);
-    animation: check-pop 0.25s cubic-bezier(.4,2,.6,1) 1;
+}
+.check-pop-animation {
+    animation: check-pop 0.25s cubic-bezier(.4,2,.6,1);
 }
 @keyframes check-pop {
     0% { transform: scale(0.7); }
@@ -861,7 +353,7 @@ style.textContent = `
     border-width: 0 3px 3px 0;
     border-radius: 1px;
     transform: rotate(45deg);
-    animation: checkmark-draw 0.18s cubic-bezier(.4,2,.6,1) 1;
+    animation: checkmark-draw 0.18s cubic-bezier(.4,2,.6,1);
 }
 @keyframes checkmark-draw {
     0% { height: 0; width: 0; opacity: 0; }
@@ -875,5 +367,13 @@ style.textContent = `
     from { background-color: #d1eaff; }
     to { background-color: transparent; }
 }
+.removed {
+    animation: fadeOut 0.4s forwards cubic-bezier(.4,2,.6,1);
+}
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); background: #ffeaea; }
+    to { opacity: 0; transform: scale(0.95); height: 0; margin: 0; padding: 0; }
+}
 `;
 document.head.appendChild(style);
+
