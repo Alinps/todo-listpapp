@@ -74,26 +74,83 @@ function renderPagination() {
     });
 }
 
-function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    if (isNaN(date)) return dateStr;
-    const day = date.getDate();
-    const month = date.toLocaleString('default', { month: 'long' });
-    const year = date.getFullYear();
+function createSearchBox() {
+    let searchContainer = document.getElementById('searchContainer');
+    if (!searchContainer) {
+        searchContainer = document.createElement('div');
+        searchContainer.id = 'searchContainer';
+        searchContainer.className = 'mb-3';
+        taskList.parentNode.insertBefore(searchContainer, taskList);
+    }
+    searchContainer.innerHTML = `
+        <input type="text" id="searchInput" class="form-control" placeholder="Search tasks by name...">
+    `;
+    document.getElementById('searchInput').addEventListener('input', function () {
+        currentPage = 1;
+        renderTasks();
+    });
+}
 
-    // Get ordinal suffix
-    function ordinal(n) {
-        if (n > 3 && n < 21) return 'th';
-        switch (n % 10) {
-            case 1: return 'st';
-            case 2: return 'nd';
-            case 3: return 'rd';
-            default: return 'th';
-        }
+function getFilteredTasks() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return tasks;
+    const query = searchInput.value.trim().toLowerCase();
+    if (!query) return tasks;
+    return tasks.filter(task => task.text.toLowerCase().includes(query));
+}
+
+function getPaginatedTasks() {
+    const filtered = getFilteredTasks();
+    const start = (currentPage - 1) * TASKS_PER_PAGE;
+    return filtered.slice(start, start + TASKS_PER_PAGE);
+}
+
+function renderPagination() {
+    let pagination = document.getElementById('pagination');
+    if (!pagination) {
+        pagination = document.createElement('nav');
+        pagination.id = 'pagination';
+        pagination.className = 'mt-3';
+        taskList.parentNode.appendChild(pagination);
     }
 
-    return `${day}${ordinal(day)} ${month} ${year}`;
+    const filtered = getFilteredTasks();
+    const totalPages = Math.ceil(filtered.length / TASKS_PER_PAGE);
+    if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
+
+    let html = `<ul class="pagination justify-content-center mb-0">`;
+    html += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage - 1}">&laquo;</a>
+            </li>`;
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<li class="page-item${i === currentPage ? ' active' : ''}">
+                    <a class="page-link" href="#" data-page="${i}">${i}</a>
+                </li>`;
+    }
+    html += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage + 1}">&raquo;</a>
+            </li>`;
+    html += `</ul>`;
+
+    pagination.innerHTML = html;
+
+    pagination.querySelectorAll('a.page-link').forEach(link => {
+        link.onclick = function (e) {
+            e.preventDefault();
+            const page = parseInt(this.getAttribute('data-page'));
+            if (page >= 1 && page <= totalPages && page !== currentPage) {
+                currentPage = page;
+                renderTasks();
+            }
+        };
+    });
 }
+
+// Insert search box on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', createSearchBox);
 
 function renderTasks() {
     taskList.innerHTML = '';
@@ -129,7 +186,7 @@ function renderTasks() {
 
         const span = document.createElement('span');
         span.className = 'task-text flex-grow-1';
-        span.textContent = `${task.text} (Due: ${formatDate(task.date)})`;
+        span.textContent = `${task.text} (Due: ${task.date})`;
         span.title = "Edit task";
         span.setAttribute('tabindex', 0);
         if (task.completed) {
@@ -168,6 +225,69 @@ function renderTasks() {
 
     renderPagination();
 }
+
+
+function createFilterOptions() {
+    let filterContainer = document.getElementById('filterContainer');
+    if (!filterContainer) {
+        filterContainer = document.createElement('div');
+        filterContainer.id = 'filterContainer';
+        filterContainer.className = 'mb-3 d-flex align-items-center justify-content-end';
+        // Place filter above the input field
+        const inputGroup = taskInput.closest('.input-group') || taskInput.parentNode;
+        if (inputGroup && inputGroup.parentNode) {
+            inputGroup.parentNode.insertBefore(filterContainer, inputGroup);
+        } else {
+            // fallback: above taskList
+            taskList.parentNode.insertBefore(filterContainer, taskList);
+        }
+    }
+    filterContainer.innerHTML = `
+        <div class="btn-group btn-group-sm" role="group" aria-label="Task filter">
+            <button type="button" class="btn btn-outline-primary active" data-filter="all">All</button>
+            <button type="button" class="btn btn-outline-primary" data-filter="pending">Pending</button>
+            <button type="button" class="btn btn-outline-primary" data-filter="completed">Completed</button>
+        </div>
+    `;
+    filterContainer.querySelectorAll('button[data-filter]').forEach(btn => {
+        btn.onclick = function () {
+            filterContainer.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentPage = 1;
+            renderTasks();
+        };
+    });
+}
+
+// Track current filter
+let currentFilter = 'all';
+
+function getFilteredTasks() {
+    const searchInput = document.getElementById('searchInput');
+    let filtered = tasks;
+    // Filter by search
+    if (searchInput) {
+        const query = searchInput.value.trim().toLowerCase();
+        if (query) {
+            filtered = filtered.filter(task => task.text.toLowerCase().includes(query));
+        }
+    }
+    // Filter by status
+    const filterContainer = document.getElementById('filterContainer');
+    if (filterContainer) {
+        const activeBtn = filterContainer.querySelector('button.active[data-filter]');
+        currentFilter = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+        if (currentFilter === 'pending') {
+            filtered = filtered.filter(task => !task.completed);
+        } else if (currentFilter === 'completed') {
+            filtered = filtered.filter(task => !!task.completed);
+        }
+    }
+    return filtered;
+}
+
+// Insert filter options on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', createFilterOptions);
 
 //✅ FIXED toggle with animation applied to correct checkbox
 // function toggleTaskCompleted(idx) {
@@ -255,77 +375,6 @@ document.getElementById('confirmDeleteBtn').onclick = function () {
 
 
 
-
-const searchInput = document.createElement('input');
-searchInput.type = 'text';
-searchInput.className = 'form-control mb-3';
-searchInput.placeholder = 'Search tasks...';
-searchInput.id = 'searchInput';
-taskList.parentNode.insertBefore(searchInput, taskList);
-
-let searchQuery = '';
-
-searchInput.addEventListener('input', function () {
-    searchQuery = this.value.trim().toLowerCase();
-    currentPage = 1;
-    renderTasks();
-});
-
-function getPaginatedTasks() {
-    let filtered = tasks;
-    if (searchQuery) {
-        filtered = tasks.filter(task => task.text.toLowerCase().includes(searchQuery));
-    }
-    const start = (currentPage - 1) * TASKS_PER_PAGE;
-    return filtered.slice(start, start + TASKS_PER_PAGE);
-}
-
-function renderPagination() {
-    let pagination = document.getElementById('pagination');
-    if (!pagination) {
-        pagination = document.createElement('nav');
-        pagination.id = 'pagination';
-        pagination.className = 'mt-3';
-        taskList.parentNode.appendChild(pagination);
-    }
-
-    let filtered = tasks;
-    if (searchQuery) {
-        filtered = tasks.filter(task => task.text.toLowerCase().includes(searchQuery));
-    }
-    const totalPages = Math.ceil(filtered.length / TASKS_PER_PAGE);
-    if (totalPages <= 1) {
-        pagination.innerHTML = '';
-        return;
-    }
-
-    let html = `<ul class="pagination justify-content-center mb-0">`;
-    html += `<li class="page-item${currentPage === 1 ? ' disabled' : ''}">
-                <a class="page-link" href="#" data-page="${currentPage - 1}">&laquo;</a>
-            </li>`;
-    for (let i = 1; i <= totalPages; i++) {
-        html += `<li class="page-item${i === currentPage ? ' active' : ''}">
-                    <a class="page-link" href="#" data-page="${i}">${i}</a>
-                </li>`;
-    }
-    html += `<li class="page-item${currentPage === totalPages ? ' disabled' : ''}">
-                <a class="page-link" href="#" data-page="${currentPage + 1}">&raquo;</a>
-            </li>`;
-    html += `</ul>`;
-
-    pagination.innerHTML = html;
-
-    pagination.querySelectorAll('a.page-link').forEach(link => {
-        link.onclick = function (e) {
-            e.preventDefault();
-            const page = parseInt(this.getAttribute('data-page'));
-            if (page >= 1 && page <= totalPages && page !== currentPage) {
-                currentPage = page;
-                renderTasks();
-            }
-        };
-    });
-}
 
 
 
