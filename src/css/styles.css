@@ -129,3 +129,81 @@ input.is-invalid {
 }
 /* ...existing code... */
 }
+
+.btn-aesthetic {
+    background: linear-gradient(90deg, #764ba2, #667eea);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 0.6em 1.5em;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(33,147,176,0.15);
+    transition: background 0.4s, transform 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.btn-aesthetic:hover, .btn-aesthetic:focus {
+    background: linear-gradient(90deg, #764ba2, #667eea);
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(33,147,176,0.22);
+}
+
+.btn-aesthetic:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(33,147,176,0.12);
+}
+
+
+
+.btn-aesthetic:hover, .btn-aesthetic:focus {
+    background: linear-gradient(90deg, #764ba2, #667eea);
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(33,147,176,0.22);
+}
+
+.btn-aesthetic:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(33,147,176,0.12);
+}
+
+.btn-aesthetic2 {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 0.6em 1.5em;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(33,147,176,0.15);
+    transition: background 0.4s, transform 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.btn-aesthetic2:hover, .btn-aesthetic:focus {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(33,147,176,0.22);
+}
+
+.btn-aesthetic2:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(33,147,176,0.12);
+}
+
+
+
+.btn-aesthetic2:hover, .btn-aesthetic:focus {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(33,147,176,0.22);
+}
+
+.btn-aesthetic2:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(33,147,176,0.12);
+}
+
+

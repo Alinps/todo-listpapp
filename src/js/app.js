@@ -200,7 +200,7 @@ function renderTasks() {
 
         const editBtn = document.createElement('button');
         editBtn.className = 'btn btn-sm btn-outline-secondary mr-1';
-        editBtn.innerHTML = '<i class="bi bi-pencil"></i>';
+        editBtn.innerHTML = '<i class="bi bi-pencil h5 fs-5 mb-0"></i>';
         editBtn.title = "Edit";
         editBtn.onclick = () => openEditModal(realIdx);
 
@@ -375,7 +375,219 @@ document.getElementById('confirmDeleteBtn').onclick = function () {
 
 
 
+function createExportDropdown() {
+    let exportContainer = document.getElementById('exportContainer');
+    if (!exportContainer) {
+        exportContainer = document.createElement('div');
+        exportContainer.id = 'exportContainer';
+        exportContainer.className = 'mb-3 d-flex align-items-center justify-content-end';
+        // Place export above the input field, next to filter
+        const filterContainer = document.getElementById('filterContainer');
+        if (filterContainer && filterContainer.parentNode) {
+            filterContainer.parentNode.insertBefore(exportContainer, filterContainer.nextSibling);
+        } else {
+            // fallback: above taskList
+            taskList.parentNode.insertBefore(exportContainer, taskList);
+        }
+    }
+    exportContainer.innerHTML = `
+        <div class="btn-group btn-group-sm ml-2 dropdown" role="group" aria-label="Export/Import">
+            <button type="button" class="btn btn-outline-success dropdown-toggle btn-aesthetic" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Export
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" data-export="csv">CSV</a>
+                <a class="dropdown-item" href="#" data-export="json">JSON</a>
+                <a class="dropdown-item" href="#" data-export="txt">Plain Text</a>
+                <a class="dropdown-item" href="#" data-export="xml">XML</a>
+                <a class="dropdown-item" href="#" data-export="pdf">PDF</a>
+            </div>
+            <label class="btn btn-outline-primary mb-0 ml-2 btn-aesthetic2" style="cursor:pointer;">
+                Import
+                <input type="file" id="importFileInput" accept=".csv,.json,.txt,.xml" style="display:none;">
+            </label>
+        </div>
+    `;
 
+    // Export handlers
+    exportContainer.querySelectorAll('[data-export]').forEach(item => {
+        item.onclick = function (e) {
+            e.preventDefault();
+            const type = this.getAttribute('data-export');
+            exportTasks(type);
+        };
+    });
+
+    // Import handler
+    exportContainer.querySelector('#importFileInput').addEventListener('change', function (e) {
+        if (e.target.files.length) {
+            importTasksFromFile(e.target.files[0]);
+            e.target.value = '';
+        }
+    });
+
+    // // Initialize Bootstrap dropdown if needed (for Bootstrap 5)
+    // if (typeof bootstrap !== 'undefined' && typeof bootstrap.Dropdown === 'function') {
+    //     const dropdownToggle = exportContainer.querySelector('.dropdown-toggle');
+    //     if (dropdownToggle) {
+    //         new bootstrap.Dropdown(dropdownToggle);
+    //     }
+    // }
+}
+
+document.addEventListener('DOMContentLoaded', createExportDropdown);
+
+function exportTasks(type) {
+    const filtered = getFilteredTasks();
+    let content = '', filename = 'tasks', mime = 'text/plain';
+
+    if (type === 'csv') {
+        content = 'Task,Due Date,Completed\n' + filtered.map(t =>
+            `"${t.text.replace(/"/g, '""')}","${t.date}",${t.completed ? 'Yes' : 'No'}`
+        ).join('\n');
+        filename += '.csv';
+        mime = 'text/csv';
+    } else if (type === 'json') {
+        content = JSON.stringify(filtered, null, 2);
+        filename += '.json';
+        mime = 'application/json';
+    } else if (type === 'txt') {
+        content = filtered.map(t =>
+            `Task: ${t.text}\nDue: ${t.date}\nCompleted: ${t.completed ? 'Yes' : 'No'}\n`
+        ).join('\n');
+        filename += '.txt';
+    } else if (type === 'xml') {
+        content = '<?xml version="1.0" encoding="UTF-8"?><tasks>' +
+            filtered.map(t =>
+                `<task><text>${escapeXml(t.text)}</text><date>${t.date}</date><completed>${t.completed}</completed></task>`
+            ).join('') + '</tasks>';
+        filename += '.xml';
+        mime = 'application/xml';
+    } else if (type === 'pdf') {
+        exportTasksToPDF(filtered);
+        return;
+    }
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    triggerDownload(url, filename);
+}
+
+function escapeXml(unsafe) {
+    return unsafe.replace(/[<>&'"]/g, function (c) {
+        return {'<':'&lt;','>':'&gt;','&':'&amp;','\'':'&apos;','"':'&quot;'}[c];
+    });
+}
+
+function triggerDownload(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 100);
+}
+
+// PDF export using jsPDF (must be included in your HTML)
+function exportTasksToPDF(tasksArr) {
+    if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {
+        alert('PDF export requires jsPDF library.');
+        return;
+    }
+    const doc = new (window.jspdf || window.jsPDF)();
+    doc.setFontSize(14);
+    doc.text('Tasks', 10, 15);
+    let y = 25;
+    tasksArr.forEach((t, i) => {
+        doc.setFont(undefined, t.completed ? 'italic' : 'normal');
+        doc.text(`${i + 1}. ${t.text}`, 10, y);
+        doc.setFontSize(10);
+        doc.text(`Due: ${t.date}   Completed: ${t.completed ? 'Yes' : 'No'}`, 12, y + 6);
+        doc.setFontSize(14);
+        y += 18;
+        if (y > 270) { doc.addPage(); y = 20; }
+    });
+    doc.save('tasks.pdf');
+}
+
+// Import logic
+function importTasksFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        let imported = [];
+        const ext = file.name.split('.').pop().toLowerCase();
+        try {
+            if (ext === 'json') {
+                imported = JSON.parse(e.target.result);
+            } else if (ext === 'csv') {
+                imported = parseCSV(e.target.result);
+            } else if (ext === 'txt') {
+                imported = parseTXT(e.target.result);
+            } else if (ext === 'xml') {
+                imported = parseXML(e.target.result);
+            } else {
+                alert('Unsupported file type.');
+                return;
+            }
+            if (!Array.isArray(imported)) throw new Error('Invalid format');
+            // Merge and deduplicate by text+date
+            const existing = new Set(tasks.map(t => t.text + '|' + t.date));
+            imported.forEach(t => {
+                if (t.text && t.date && !existing.has(t.text + '|' + t.date)) {
+                    tasks.push({
+                        text: t.text,
+                        date: t.date,
+                        completed: !!t.completed
+                    });
+                }
+            });
+            saveTasks();
+            renderTasks();
+            alert('Tasks imported successfully!');
+        } catch (err) {
+            alert('Failed to import: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+}
+
+function parseCSV(str) {
+    const lines = str.trim().split('\n');
+    const arr = [];
+    for (let i = 1; i < lines.length; i++) {
+        const [text, date, completed] = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"|"$/g, '').replace(/""/g, '"'));
+        arr.push({ text, date, completed: completed === 'Yes' });
+    }
+    return arr;
+}
+
+function parseTXT(str) {
+    const arr = [];
+    const blocks = str.split(/\n\s*\n/);
+    blocks.forEach(block => {
+        const text = (block.match(/Task:\s*(.*)/) || [])[1];
+        const date = (block.match(/Due:\s*(.*)/) || [])[1];
+        const completed = (block.match(/Completed:\s*(.*)/) || [])[1];
+        if (text && date) arr.push({ text, date, completed: completed === 'Yes' });
+    });
+    return arr;
+}
+
+function parseXML(str) {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(str, 'application/xml');
+    const arr = [];
+    xml.querySelectorAll('task').forEach(node => {
+        arr.push({
+            text: (node.querySelector('text') || {}).textContent || '',
+            date: (node.querySelector('date') || {}).textContent || '',
+            completed: (node.querySelector('completed') || {}).textContent === 'true'
+        });
+    });
+    return arr;
+}
 
 
 
