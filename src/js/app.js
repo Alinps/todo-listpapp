@@ -402,7 +402,7 @@ function createExportDropdown() {
                 <a class="dropdown-item" href="#" data-export="xml">XML</a>
                 <a class="dropdown-item" href="#" data-export="pdf">PDF</a>
             </div>
-            <label class="btn btn-outline-primary mb-0 ml-2 btn-aesthetic2" style="cursor:pointer;">
+            <label type = "button" class="btn  mb-0  btn-aesthetic2">
                 Import
                 <input type="file" id="importFileInput" accept=".csv,.json,.txt,.xml" style="display:none;">
             </label>
