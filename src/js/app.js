@@ -31,6 +31,19 @@ function getPaginatedTasks() {
     return tasks.slice(start, start + TASKS_PER_PAGE);
 }
 
+
+function formatDate(dateString) {
+    const dateObj = new Date(dateString);
+    const day = dateObj.getDate();
+    const month = dateObj.toLocaleString('default', { month: 'long' }); // e.g., "July"
+    const year = dateObj.getFullYear();
+    return `${day} ${month} ${year}`;
+}
+
+
+
+
+
 function renderPagination() {
     let pagination = document.getElementById('pagination');
     if (!pagination) {
@@ -186,7 +199,8 @@ function renderTasks() {
 
         const span = document.createElement('span');
         span.className = 'task-text flex-grow-1';
-        span.textContent = `${task.text} (Due: ${task.date})`;
+        span.textContent = `${task.text} (Due: ${formatDate(task.date)})`;
+
         span.title = "Edit task";
         span.setAttribute('tabindex', 0);
         if (task.completed) {
@@ -244,9 +258,9 @@ function createFilterOptions() {
     }
     filterContainer.innerHTML = `
         <div class="btn-group btn-group-sm" role="group" aria-label="Task filter">
-            <button type="button" class="btn btn-outline-primary active" data-filter="all">All</button>
-            <button type="button" class="btn btn-outline-primary" data-filter="pending">Pending</button>
-            <button type="button" class="btn btn-outline-primary" data-filter="completed">Completed</button>
+            <button type="button" class="btn btn-outline-primary active custom-outline-btn" data-filter="all">All</button>
+            <button type="button" class="btn btn-outline-primary custom-outline-btn" data-filter="pending">Pending</button>
+            <button type="button" class="btn btn-outline-primary custom-outline-btn" data-filter="completed">Completed</button>
         </div>
     `;
     filterContainer.querySelectorAll('button[data-filter]').forEach(btn => {
@@ -392,7 +406,7 @@ function createExportDropdown() {
     }
     exportContainer.innerHTML = `
         <div class="btn-group btn-group-sm ml-2 dropdown" role="group" aria-label="Export/Import">
-            <button type="button" class="btn btn-outline-success dropdown-toggle btn-aesthetic" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-success dropdown-toggle btn-aesthetic3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Export
             </button>
             <div class="dropdown-menu">

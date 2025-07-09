@@ -27,9 +27,9 @@
 </head>
 <body>
   <div class="container mt-5">
-      <div class="card justify-content-center">
+      <div class="card justify-content-center border-0">
         <div class="card-body">
-           <h1 class="text-center mb-4">To-Do List</h1>
+           <h1 class="text-center mb-4 gradient-text">To-Do List</h1>
           <div class="row">
             <div class="col-sm-4">
              
@@ -40,16 +40,16 @@
             <div class="col-sm-4">
             </div>
           </div>
-            <form class="mb-3">
+            <form class="mb-2">
                 <div class="row">
-                  <div class="input-group shadow-sm">
-                      <div class="col-4-sm">
-                          <input type="text" id="taskInput" class="form-control" placeholder="Add a new task" aria-label="Task">
+                  <div class="input-group">
+                      <div class="col-sm">
+                          <input type="text" id="taskInput" class="form-control" placeholder="Add a new task" aria-label="Task" style="width: mx-auto;">
                       </div>
-                      <div class="col-4-sm mr-3">
-                          <input type="date" id="taskDate" class="form-control ml-2 mr-2" style="max-width: 180px;" aria-label="Due date">
+                      <div class="col-sm ">
+                          <input type="date" id="taskDate" class="form-control ml-2 mr-2" style="max-width: 150px;" aria-label="Due date">
                       </div>
-                      <div class="col-4-sm">
+                      <div class="col-sm">
                           <button class="btn add-task-btn h-100 ml-auto " id="addTaskBtn" type="button" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; box-shadow: 0 2px 8px rgba(102,126,234,0.15); transition: background 0.3s, transform 0.2s;">
                             <i class="bi bi-plus-lg"></i> Add Task
                           </button>
@@ -59,19 +59,16 @@
             </form>
             <div class="row">
               <div class="col-sm">
-                <ul id="taskList" class="list-group"></ul>  </div>
+                <ul id="taskList" class="list-group comic-sans-bold"></ul>  </div>
               </div>
             </div>
             
          
 
           </div>
-          </div>
+        </div>
        
         
-
-       
-    </div>
 
   <!-- Delete Confirmation Modal -->
   <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
